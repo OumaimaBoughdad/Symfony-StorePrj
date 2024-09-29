@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home{% endblock %}
+
+
+{% block body %}
+<div class="row my-5">
+    <div class="col-md-12">
+        <div class="my-3 d-flex justify-content-between align-items-center">
+            <button type="button" class="btn btn-dark position-relative">
+                Products
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                  {{ products|length }}
+                  <span class="visually-hidden">products</span>
+                </span>
+            </button>
+            <div>
+                <a href="{{ path('home') }}" class="btn btn-sm btn-outline-dark mx-1">
+                    All
+                </a>
+                {% for category in categories %}
+               <!--
+                 {% if category.name=='accessories' %}
+                <a href="{{ path('product_category', { category: category.id }) }}" class="btn btn-sm btn-outline-dark mx-1">
+                    <img src="public/uploads/necklace.png" alt="">
+                </a>
+                {% endif%}
+               -->
+                    <a href="{{ path('product_category', { category: category.id }) }}" class="btn btn-sm btn-outline-dark mx-1">
+                        {{ category.name }}
+                    </a>
+                   
+                {% endfor %}
+            </div>
+        </div>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% if products|length %}
+                {% for product in products %}
+                    <div class="col">
+                        <div class="card border-0 rounded" style="height: 100%;">
+                            {% if product.image %}
+                                <img src="{{ photo_url ~ product.image }}"
+                                    alt="{{ product.name }}" 
+                                    class="card-img-top" style="height: 200px; object-fit: cover;">
+                            {% else %}
+                                <img src="{{ photo_url ~ 'flowers.png' }}"
+                                    alt="{{ product.name }}" 
+                                    class="card-img-top" style="height: 200px; object-fit: cover;">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text">{{ product.description }}</p>
+                                <h5><span class="text text-danger">{{ product.price }} DH</span></h5>
+                                <a href="{{ path('product_show', { id: product.id }) }}" class="btn btn-sm btn-primary">
+                                    View
+                                </a>
+                                <a href="{{ path('cart_add', { id: product.id }) }}" class="btn btn-sm btn-primary">
+                                    Add to Cart
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info">
+                    No products found!
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

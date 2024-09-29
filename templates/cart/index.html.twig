@@ -1,0 +1,119 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200&display=swap');
+
+body {
+  font-family: 'Manrope', sans-serif;
+  background:#eee;
+}
+
+.size span {
+  font-size: 11px;
+}
+
+.color span {
+  font-size: 11px;
+}
+
+.product-deta {
+  margin-right: 70px;
+}
+
+.gift-card:focus {
+  box-shadow: none;
+}
+
+.pay-button {
+  color: #fff;
+}
+
+.pay-button:hover {
+  color: #fff;
+}
+
+.pay-button:focus {
+  color: #fff;
+  box-shadow: none;
+}
+
+.text-grey {
+  color: #a39f9f;
+}
+
+.qty i {
+  font-size: 11px;
+}
+</style>
+<div class="row my-5">
+    <div class="container mt-5 mb-5">
+        <div class="d-flex justify-content-center row">
+            <div class="col-md-8">
+                <div class="p-2">
+                    <h4>Shopping cart</h4>
+                    <div class="d-flex flex-row align-items-center pull-right"><span class="mr-1">Sort by:</span><span class="mr-1 font-weight-bold">Price</span><i class="fa fa-angle-down"></i></div>
+                </div>
+                {% for element in data %}
+                <div class="d-flex flex-row justify-content-between align-items-center p-2 bg-white mt-4 px-3 rounded">
+                    <div class="mr-1"> <img src="{{ photo_url ~ element.product.image }}"
+                        alt="{{ element.product.name }}" 
+                        class="card-img-top" style="height: 100px; object-fit: cover;"></div>
+                    <div class="d-flex flex-column align-items-center product-details"><span class="font-weight-bold">{{ element.product.name }}</span>
+                        <div class="d-flex flex-row product-desc">
+                        </div>
+                    </div>
+                    <div class="d-flex flex-row align-items-center qty"><i class="fa fa-minus text-danger"></i>
+                        <h5 class="text-grey mt-1 mr-1 ml-1">{{ element.quantity }}</h5><i class="fa fa-plus text-success"></i></div>
+                    <div>
+                        <h5 class="text-grey">{{element.product.price}}DH</h5>
+                    </div>
+                    <div class="d-flex align-items-center"><i class="fa fa-trash mb-1 text-danger"></i></div>
+                </div>
+                {% endfor %}
+                <div class="d-flex flex-row align-items-center mt-3 p-2 bg-white rounded">Total: <span>{{ total }}</span> </div>
+                <div id="paypal-button-container" style="margin-top: 40px">
+                </div>
+                <script src="https://www.paypal.com/sdk/js?client-id=AU1qy0WsU7oduRxknHZ3kNVW2F7Lw59IC-6jhnHNkvAyGBLBC8lc_wVukq8DdcjoeGjWb1lS_Hsx8dJW"></script>
+                <script>
+                    paypal.Buttons({
+                        // All your options here !
+                        createOrder: (data, actions) => {
+                            return actions.order.create({
+                                intent: 'capture',  // capture or authorize
+                                purchase_units: [{
+                                    amount: {
+                                        value: {{ total }}
+                                    },
+                                    description: 'Magical unicorn',
+                                    invoice_id: '1234567890',
+                                    soft_descriptor: 'unicorn-2345678'
+                                }],
+                                application_context: {
+                                    brand_name: 'My amazing brand',
+                                    shipping_preference: 'NO_SHIPPING' // if you handle shipping
+                                }
+                            });
+                        },
+                        // Finalizes the transaction after payer approval
+                        onApprove: (data) => {
+                           alert("The payment done with success");
+                        },
+                        // The user closed the window
+                        onCancel: () => {
+                            console.log('The user canceled the payment');
+                            alert("")
+                        },
+                        onError: (err) => {
+                            console.log('Something went wrong', err);
+                        }
+
+                    }).render('#paypal-button-container');
+                </script>
+                </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
